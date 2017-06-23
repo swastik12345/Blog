@@ -1,0 +1,56 @@
+{% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<div class="container">
+
+{{ title }} is working
+<form method="get" action="">
+
+    <input type="text" placeholder="Search Post" name="q" value="{{ request.GET.q }}">
+    <input type="submit" value="Search">
+</form>
+
+<div class="row">
+{% for obj in object_list %}
+
+    <div class="col-sm-12">
+    <div class="thumbnail">
+      <div class="caption">
+          {% if obj.image %}
+     <img src="{{ obj.image.url | default_if_none:'#' }}" class="img-responsive" />
+       {% endif %}
+        <h3><a href='{{ obj.get_absolute_url }}'> {{ obj.title }}</a><small>{{ obj.timestamp }}</small></h3>
+        <p>{{ obj.content |linebreaks |truncatechars:50 }}</p>
+        <p><a href='{{ obj.get_absolute_url }}' class="btn btn-primary" role="button">View</a>
+      </div>
+    </div>
+  </div>
+
+{% endfor %}
+<div class="pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+            <a href="?page={{ object_list.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+
+        {% if object_list.has_next %}
+            <a href="?page={{ object_list.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+</div>
+</div>
+</body>
+</html>
